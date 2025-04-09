@@ -10,7 +10,7 @@ use App\Http\Controllers\KnowledgeController;
 use App\Http\Controllers\GroupController;
 use App\Http\Controllers\TeacherController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\QuizController;
+use App\Http\Controllers\QcmController;
 
 // Redirect the root path to /dashboard
 Route::redirect('/', 'dashboard');
@@ -36,9 +36,8 @@ Route::middleware('auth')->group(function () {
         Route::get('students', [StudentController::class, 'index'])->name('student.index');
 
         // Knowledge
-        Route::get('knowledge', [KnowledgeController::class, 'index'])->name('knowledge.index');
-        Route::get('/admin/quiz/create', [QuizController::class, 'create'])->name('admin.quiz.create');
-        Route::post('/admin/quiz/create', [QuizController::class, 'create']);
+        Route::get('knowledge', [QcmController::class, 'index'])->name('knowledge.index');
+        Route::get('/qcm', [QcmController::class, 'show'])->name('qcm.show');
 
         // Groups
         Route::get('groups', [GroupController::class, 'index'])->name('group.index');
