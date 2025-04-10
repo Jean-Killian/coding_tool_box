@@ -36,8 +36,7 @@ Route::middleware('auth')->group(function () {
         Route::get('students', [StudentController::class, 'index'])->name('student.index');
 
         // Knowledge
-        Route::get('knowledge', [QcmController::class, 'index'])->name('knowledge.index');
-        Route::get('/qcm', [QcmController::class, 'show'])->name('qcm.show');
+        Route::get('knowledge', [KnowledgeController::class, 'index'])->name('knowledge.index');
 
         // Groups
         Route::get('groups', [GroupController::class, 'index'])->name('group.index');
