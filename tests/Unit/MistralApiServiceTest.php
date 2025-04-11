@@ -12,10 +12,7 @@ use Mockery;
 class MistralApiServiceTest extends TestCase
 {
     /**
-     * Test unitaire : vérifie que la méthode generateQuestionnaire fonctionne quand l'API répond correctement.
-     *
-     * Ce test n'appelle pas l'API réelle. Il utilise un mock pour simuler une réponse de l'API.
-     * On vérifie que le service retourne bien les données attendues (contenu du message généré).
+     * Test Mistral API success with mocked response
      */
     public function testGenerateQuestionnaireSuccess()
     {
@@ -47,10 +44,7 @@ class MistralApiServiceTest extends TestCase
     }
 
     /**
-     * Test unitaire : vérifie que la méthode generateQuestionnaire gère bien une erreur de l'API.
-     *
-     * Ce test simule une erreur 400 (Bad Request) et vérifie que le service lance une exception avec un message clair.
-     * Il permet de s'assurer que les erreurs API sont bien interceptées et traitées proprement.
+     * Test Mistral API error handling with mocked exception
      */
     public function testGenerateQuestionnaireFailure()
     {

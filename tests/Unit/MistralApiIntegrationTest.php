@@ -8,10 +8,7 @@ use App\Services\MistralApiService;
 class MistralApiIntegrationTest extends TestCase
 {
     /**
-     * Test d'intégration : vérifie que l'API Mistral répond correctement à une vraie requête.
-     *
-     * Ce test utilise une vraie clé API et un vrai appel réseau (pas de mock).
-     * Il vérifie que la réponse contient bien le format attendu (champ 'choices' avec un message généré).
+     * Integration test: checks if Mistral API responds correctly.
      */
     public function testGenerateQuestionnaireIntegration()
     {

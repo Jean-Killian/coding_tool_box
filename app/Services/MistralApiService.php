@@ -8,12 +8,23 @@ use Illuminate\Support\Facades\Log;
 
 class MistralApiService
 {
+    /**
+     * Guzzle HTTP client used to make requests to the Mistral API.
+     */
     protected $client;
+    /**
+     * API key retrieved from the .env configuration.
+     */
     protected $apiKey;
+
+    /**
+     * Base URL for the Mistral chat completion endpoint.
+     */
     protected $baseUrl;
 
-    //Constructeur de la classe MistralApiService
-    //Initialise le client HTTP et récupère la clé API depuis le fichier .env
+    /**
+     * Initializes the HTTP client and retrieves the Mistral API key from environment variables.
+     */
     public function __construct()
     {
         $this->client = new Client();
@@ -22,13 +33,16 @@ class MistralApiService
     }
 
     /**
-     * Envoie un message à l'API Mistral pour générer un QCM.
+     * Sends a request to the Mistral API to generate a quiz based on user input.
      *
-     * @param array $data Contient un tableau de messages (ex: prompt de l'utilisateur).
-     * @return array Résultat brut retourné par l'API (inclut généralement un champ 'choices' avec la réponse de l'IA).
+     * - Builds a JSON request with model settings and messages.
+     * - Sends a POST request using Guzzle.
+     * - Logs both request and response for debugging.
+     * - Handles errors and returns the decoded API response.
      *
-     * Cette méthode utilise Guzzle pour envoyer une requête POST vers l'API de Mistral.
-     * Elle gère aussi les erreurs et les logs pour faciliter le débogage.
+     * @param array $data Array containing 'messages' for the chat prompt.
+     * @return array Decoded JSON response from Mistral API.
+     * @throws \Exception If request fails or input is invalid.
      */
     public function generateQuestionnaire(array $data)
     {

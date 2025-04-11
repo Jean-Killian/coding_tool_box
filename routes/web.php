@@ -3,14 +3,14 @@
 use App\Http\Controllers\CohortController;
 use App\Http\Controllers\CommonLifeController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\GroupController;
+use App\Http\Controllers\Knowledge\IAQuizGeneratorController;
+use App\Http\Controllers\Knowledge\TeacherQuizController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RetroController;
 use App\Http\Controllers\StudentController;
-use App\Http\Controllers\KnowledgeController;
-use App\Http\Controllers\GroupController;
 use App\Http\Controllers\TeacherController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\QcmController;
 
 // Redirect the root path to /dashboard
 Route::redirect('/', 'dashboard');
@@ -36,7 +36,12 @@ Route::middleware('auth')->group(function () {
         Route::get('students', [StudentController::class, 'index'])->name('student.index');
 
         // Knowledge
-        Route::get('knowledge', [KnowledgeController::class, 'index'])->name('knowledge.index');
+        Route::get('/knowledge', [TeacherQuizController::class, 'list'])->name('knowledge.list');
+        Route::get('/knowledge/generate', [TeacherQuizController::class, 'createForm'])->name('knowledge.generate');
+        Route::get('/knowledge/generate-ia', [IAQuizGeneratorController::class, 'generateFromPrompt'])->name('knowledge.ia.generate');
+        Route::get('/knowledge/preview', [TeacherQuizController::class, 'reviewGenerated'])->name('knowledge.preview');
+        Route::post('/knowledge/store', [TeacherQuizController::class, 'saveGenerated'])->name('knowledge.store');
+        Route::get('/knowledge/quiz/{quiz}', [TeacherQuizController::class, 'show'])->name('knowledge.quiz.show');
 
         // Groups
         Route::get('groups', [GroupController::class, 'index'])->name('group.index');
