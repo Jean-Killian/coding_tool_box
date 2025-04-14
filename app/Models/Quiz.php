@@ -22,6 +22,12 @@ class Quiz extends Model
         'is_published' => 'boolean',
     ];
 
+    public function cohorts()
+    {
+        return $this->belongsToMany(Cohort::class, 'cohorts_bilans')
+            ->withPivot('user_id', 'score')
+            ->withTimestamps();
+    }
     public function user()
     {
         return $this->belongsTo(User::class);

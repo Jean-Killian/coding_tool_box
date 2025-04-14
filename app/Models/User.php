@@ -81,4 +81,18 @@ class User extends Authenticatable
             ->withPivot('role')
             ->first();
     }
+
+    public function assignedBilans()
+    {
+        return $this->belongsToMany(Quiz::class, 'cohorts_bilans', 'user_id', 'quiz_id')
+            ->withPivot('cohort_id', 'score')
+            ->withTimestamps();
+    }
+
+    public function bilans()
+    {
+        return $this->belongsToMany(Quiz::class, 'cohorts_bilans')
+            ->withPivot('score')
+            ->withTimestamps();
+    }
 }

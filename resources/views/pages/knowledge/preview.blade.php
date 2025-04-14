@@ -17,6 +17,7 @@
                     <li>
                         <!-- Question text -->
                         <p class="font-semibold">{{ $i + 1 }}. {{ $question['question'] }}</p>
+                        <p class="text-sm text-gray-500 italic">Difficulté : {{ ucfirst($question['difficulty']) }}</p>
 
                         <!-- Question options -->
                         <ul class="list-disc list-inside ml-4">

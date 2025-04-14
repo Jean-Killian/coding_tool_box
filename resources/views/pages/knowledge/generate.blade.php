@@ -38,6 +38,14 @@
                        placeholder="Par ex. 5">
             </div>
 
+            <!-- Answers count input -->
+            <div>
+                <label for="answers" class="block font-semibold mb-1">Nombre de réponses par question</label>
+                <input type="number" id="answers" name="answers" min="2" max="6" required
+                       class="w-full border-gray-300 rounded shadow-sm"
+                       placeholder="Par ex. 4">
+            </div>
+
             <!-- Submit button -->
             <div class="text-right">
                 <button type="submit"
