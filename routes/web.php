@@ -5,7 +5,7 @@ use App\Http\Controllers\CommonLifeController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\GroupController;
 use App\Http\Controllers\Knowledge\IAQuizGeneratorController;
-use App\Http\Controllers\Knowledge\TeacherQuizController;
+use App\Http\Controllers\Knowledge\QuizController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RetroController;
 use App\Http\Controllers\StudentController;
@@ -36,12 +36,15 @@ Route::middleware('auth')->group(function () {
         Route::get('students', [StudentController::class, 'index'])->name('student.index');
 
         // Knowledge
-        Route::get('/knowledge', [TeacherQuizController::class, 'list'])->name('knowledge.list');
-        Route::get('/knowledge/generate', [TeacherQuizController::class, 'createForm'])->name('knowledge.generate');
-        Route::get('/knowledge/generate-ia', [IAQuizGeneratorController::class, 'generateFromPrompt'])->name('knowledge.ia.generate');
-        Route::get('/knowledge/preview', [TeacherQuizController::class, 'reviewGenerated'])->name('knowledge.preview');
-        Route::post('/knowledge/store', [TeacherQuizController::class, 'saveGenerated'])->name('knowledge.store');
-        Route::get('/knowledge/quiz/{quiz}', [TeacherQuizController::class, 'show'])->name('knowledge.quiz.show');
+        Route::prefix('knowledge')->name('knowledge.')->group(function () {
+            Route::get('/', [QuizController::class, 'index'])->name('index');
+            Route::get('/generate', [QuizController::class, 'create'])->name('generate');
+            Route::get('/generate-ia', [IAQuizGeneratorController::class, 'generateFromPrompt'])->name('ia.generate');
+            Route::get('/preview', [QuizController::class, 'reviewGenerated'])->name('preview');
+            Route::post('/store', [QuizController::class, 'saveGenerated'])->name('store');
+            Route::get('/quiz/show/{quiz}', [QuizController::class, 'show'])->name('quiz.show');
+            Route::get('/quiz/answer/{quiz}', [QuizController::class, 'answer'])->name('quiz.answer');
+        });
 
         // Groups
         Route::get('groups', [GroupController::class, 'index'])->name('group.index');

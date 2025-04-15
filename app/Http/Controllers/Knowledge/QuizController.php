@@ -3,11 +3,12 @@
 namespace App\Http\Controllers\Knowledge;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreQuizRequest;
 use App\Models\Quiz;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class TeacherQuizController extends Controller
+class QuizController extends Controller
 {
     /**
      * Shows a preview of the generated QCM before saving.
@@ -29,17 +30,20 @@ class TeacherQuizController extends Controller
         ]);
     }
 
-
     /**
      * Saves the validated QCM to the database.
      * Validates the form, decodes JSON, and stores the quiz.
      */
     public function saveGenerated(Request $request)
     {
+        if ($request->publish && !auth()->user()->can('create', Quiz::class)) {
+            abort(403, 'Vous n\'êtes pas autorisé à publier ce QCM.');
+        }
+
         $request->validate([
             'subject' => 'required|string|max:100',
-            'question_count' => 'required|integer|min:1|max:20',
-            'publish' => 'required|boolean'
+            'question_count' => 'required|integer|min:1|max:10',
+            'publish' => 'nullable|boolean'
         ]);
 
         $qcmArray = json_decode($request->input('qcm'), true);
@@ -57,36 +61,33 @@ class TeacherQuizController extends Controller
             'subject' => $request->subject,
             'question_count' => $request->question_count,
             'questions' => json_decode($request->qcm, true),
-            'is_published' => $request->publish
+            'is_published' => $request->boolean('publish', false),
         ]);
 
-        return redirect()->route('knowledge.list')->with('success', 'QCM enregistré');
+        return redirect()->route('knowledge.index')->with('success', 'QCM enregistré');
     }
-
 
     /**
      * Displays all QCMs created by the current user.
      * Retrieves and orders quizzes by creation date.
      */
-    public function list()
+    public function index()
     {
         $quizzes = Quiz::where('user_id', auth()->id())
-            ->orderByDesc('created_at')
+            ->latest()
             ->get();
 
-        return view('pages.knowledge.list', compact('quizzes'));
+        return view('pages.knowledge.index', compact('quizzes'));
     }
-
 
     /**
      * Displays the form to create a new QCM.
      * Used to define subject and number of questions.
      */
-    public function createForm()
+    public function create()
     {
         return view('pages.knowledge.generate');
     }
-
 
     /**
      * Displays a specific saved QCM in read-only mode.
@@ -95,6 +96,13 @@ class TeacherQuizController extends Controller
     public function show(Quiz $quiz)
     {
         return view('pages.knowledge.show', [
+            'quiz' => $quiz
+        ]);
+    }
+
+    public function answer(Quiz $quiz)
+    {
+        return view('pages.knowledge.answer', [
             'quiz' => $quiz
         ]);
     }

@@ -68,31 +68,15 @@ class User extends Authenticatable
         return $this->first_name . ' ' . $this->last_name[0] . '.';
     }
 
-    /**
-     * Retrieve the school of the user
-     */
-
-    /**
-     * @return (Model&object)|null
-     */
-    public function school() {
-        // With this, the user can only have 1 school
+    public function schools()
+    {
         return $this->belongsToMany(School::class, 'users_schools')
             ->withPivot('role')
-            ->first();
-    }
-
-    public function assignedBilans()
-    {
-        return $this->belongsToMany(Quiz::class, 'cohorts_bilans', 'user_id', 'quiz_id')
-            ->withPivot('cohort_id', 'score')
             ->withTimestamps();
     }
 
-    public function bilans()
+    public function school()
     {
-        return $this->belongsToMany(Quiz::class, 'cohorts_bilans')
-            ->withPivot('score')
-            ->withTimestamps();
+        return $this->schools()->first();
     }
 }

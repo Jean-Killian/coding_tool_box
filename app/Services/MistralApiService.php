@@ -8,86 +8,77 @@ use Illuminate\Support\Facades\Log;
 
 class MistralApiService
 {
-    /**
-     * Guzzle HTTP client used to make requests to the Mistral API.
-     */
-    protected $client;
-    /**
-     * API key retrieved from the .env configuration.
-     */
-    protected $apiKey;
+    protected Client $client;
+    protected string $apiKey;
+    protected string $baseUrl = 'https://api.mistral.ai/v1/chat/completions';
 
-    /**
-     * Base URL for the Mistral chat completion endpoint.
-     */
-    protected $baseUrl;
-
-    /**
-     * Initializes the HTTP client and retrieves the Mistral API key from environment variables.
-     */
     public function __construct()
     {
         $this->client = new Client();
         $this->apiKey = env('MISTRAL_API_KEY');
-        $this->baseUrl = 'https://api.mistral.ai/v1/chat/completions';
     }
 
     /**
-     * Sends a request to the Mistral API to generate a quiz based on user input.
+     * Sends a quiz generation request to the Mistral API.
      *
-     * - Builds a JSON request with model settings and messages.
-     * - Sends a POST request using Guzzle.
-     * - Logs both request and response for debugging.
-     * - Handles errors and returns the decoded API response.
+     * - Validates input messages
+     * - Builds the request payload
+     * - Sends POST request and handles errors
      *
-     * @param array $data Array containing 'messages' for the chat prompt.
-     * @return array Decoded JSON response from Mistral API.
-     * @throws \Exception If request fails or input is invalid.
+     * @param array $data User messages to send to the AI
+     * @return array Parsed JSON response from the API
      */
-    public function generateQuestionnaire(array $data)
+    public function generateQuestionnaire(array $data): array
     {
-
-        $requestBody = [
-            "model" => "mistral-small",
-            "temperature" => 0.7,
-            "max_tokens" => 2048,
-            "stream" => false,
-            "messages" => []
-        ];
-
-        if (isset($data['messages']) && is_array($data['messages'])) {
-            $requestBody['messages'] = $data['messages'];
-        } else {
-            throw new \Exception("Aucun message utilisateur fourni pour générer le QCM.");
+        if (empty($data['messages']) || !is_array($data['messages'])) {
+            throw new \InvalidArgumentException("Missing or invalid 'messages' array.");
         }
 
+        $body = $this->buildRequestBody($data['messages']);
+
         try {
-            Log::info('Sending request to Mistral API with data:', $requestBody);
+            Log::info('Sending request to Mistral API', ['body' => $body]);
 
             $response = $this->client->post($this->baseUrl, [
                 'headers' => [
                     'Authorization' => 'Bearer ' . $this->apiKey,
                     'Content-Type' => 'application/json',
                 ],
-                'json' => $requestBody,
+                'json' => $body,
             ]);
 
-            $body = $response->getBody()->getContents();
-            Log::info('Réponse de Mistral API :', ['body' => $body]);
+            $content = $response->getBody()->getContents();
+            Log::info('Mistral API response', ['content' => $content]);
 
-            return json_decode($body, true);
+            return json_decode($content, true);
 
         } catch (RequestException $e) {
-            if ($e->hasResponse()) {
-                $errorResponse = $e->getResponse()->getBody()->getContents();
-                Log::error('Error response from Mistral API:', ['error' => $errorResponse]);
-                throw new \Exception("Erreur de l'API : " . $errorResponse);
-            } else {
-                Log::error('Request failed:', ['message' => $e->getMessage()]);
-                throw new \Exception("Erreur de connexion : " . $e->getMessage());
-            }
+            $message = $e->hasResponse()
+                ? $e->getResponse()->getBody()->getContents()
+                : $e->getMessage();
+
+            Log::error('Mistral API error', ['error' => $message]);
+            throw new \Exception("Mistral API request failed: " . $message);
         }
     }
+
+    /**
+     * Builds the API request body.
+     *
+     * @param array $messages User messages for the prompt
+     * @return array Formatted request payload
+     */
+    protected function buildRequestBody(array $messages): array
+    {
+        return [
+            'model' => 'mistral-small',
+            'temperature' => 0.7,
+            'max_tokens' => 2048,
+            'stream' => false,
+            'messages' => $messages,
+        ];
+    }
 }
+
 
 

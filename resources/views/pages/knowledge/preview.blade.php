@@ -46,6 +46,7 @@
             <input type="hidden" name="qcm" value="{{ $qcmRaw }}">
 
             <!-- Checkbox to publish quiz -->
+
             <label class="block">
                 <input type="checkbox" name="publish" value="1" checked>
                 <span class="ml-2">Publier ce QCM pour les étudiants</span>
@@ -67,12 +68,11 @@
                 </a>
 
                 <!-- Cancel and go back -->
-                <a href="{{ route('knowledge.list') }}"
+                <a href="{{ route('knowledge.index') }}"
                    class="bg-gray-400 hover:bg-gray-500 text-white px-4 py-2 rounded">
                     ❌ Annuler / Ne pas enregistrer
                 </a>
             </div>
-
         </form>
     </div>
 </x-app-layout>

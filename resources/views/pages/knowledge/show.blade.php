@@ -31,6 +31,13 @@
                 </li>
             @endforeach
         </ol>
+
+        <!-- Submit button -->
+        <label class="block">
+            <input type="checkbox" name="publish" value="1" checked>
+            <span class="ml-2">Publier ce QCM pour les étudiants</span>
+        </label>
+
     </div>
 </x-app-layout>
 
