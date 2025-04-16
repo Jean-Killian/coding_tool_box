@@ -12,15 +12,18 @@ class Cohort extends Model
     protected $table        = 'cohorts';
     protected $fillable     = ['school_id', 'name', 'description', 'start_date', 'end_date'];
 
+    public function users()
+    {
+        return $this->belongsToMany(User::class, 'cohort_user')->withTimestamps();
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
     public function quizzes()
     {
         return $this->belongsToMany(Quiz::class, 'cohorts_bilans')
-            ->withPivot('user_id', 'score')
+            ->withPivot(['user_id', 'score'])
             ->withTimestamps();
-    }
-
-    public function students()
-    {
-        return $this->hasMany(User::class);
     }
 }

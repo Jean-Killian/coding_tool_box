@@ -45,13 +45,6 @@
             <input type="hidden" name="question_count" value="{{ $questionCount }}">
             <input type="hidden" name="qcm" value="{{ $qcmRaw }}">
 
-            <!-- Checkbox to publish quiz -->
-
-            <label class="block">
-                <input type="checkbox" name="publish" value="1" checked>
-                <span class="ml-2">Publier ce QCM pour les étudiants</span>
-            </label>
-
             <!-- Submit button -->
             <div>
                 <button type="submit" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded">

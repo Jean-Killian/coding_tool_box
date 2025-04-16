@@ -37,6 +37,11 @@ class QuizPolicy
         return false;
     }
 
+    public function viewTeacherContent(User $user): bool
+    {
+        return $user->isTeacher();
+    }
+
     /**
      * Determine whether the user can update the model.
      */

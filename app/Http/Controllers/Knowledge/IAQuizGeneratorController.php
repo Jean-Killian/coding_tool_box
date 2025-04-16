@@ -103,7 +103,7 @@ class IAQuizGeneratorController extends Controller
             return json_decode($response['choices'][0]['message']['content'] ?? '', true);
 
         } catch (\Exception $e) {
-            \Log::error('Erreur IA : ' . $e->getMessage());
+            Log::error('Erreur IA : ' . $e->getMessage());
 
             return null;
         }

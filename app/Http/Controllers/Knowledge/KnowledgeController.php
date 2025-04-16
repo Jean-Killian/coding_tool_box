@@ -3,13 +3,17 @@
 namespace App\Http\Controllers\Knowledge;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreQuizRequest;
+use App\Models\Cohort;
 use App\Models\Quiz;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
-class QuizController extends Controller
+class KnowledgeController extends Controller
 {
+    use AuthorizesRequests;
+
     /**
      * Shows a preview of the generated QCM before saving.
      * Retrieves data from session and sends it to the preview view.
@@ -73,11 +77,29 @@ class QuizController extends Controller
      */
     public function index()
     {
-        $quizzes = Quiz::where('user_id', auth()->id())
-            ->latest()
+        $user = auth()->user();
+
+        if ($user->isTeacher()) {
+            return redirect()->route('knowledge.teacher_index');
+        }
+
+        $assignedQuizzes = Quiz::whereHas('cohorts', function ($query) use ($user) {
+            $query->whereIn('cohorts.id', $user->cohorts->pluck('id'));
+        })
+            ->whereDoesntHave('students', function ($query) use ($user) {
+                $query->where('user_id', $user->id)->whereNotNull('score');
+            })
             ->get();
 
-        return view('pages.knowledge.index', compact('quizzes'));
+        $completedQuizzes = $user->quizzes()->wherePivotNotNull('score')->get();
+
+        $selfQuizzes = Quiz::where('user_id', $user->id)->get();
+
+        return view('pages.knowledge.index', compact(
+            'assignedQuizzes',
+            'completedQuizzes',
+            'selfQuizzes'
+        ));
     }
 
     /**
@@ -95,15 +117,14 @@ class QuizController extends Controller
      */
     public function show(Quiz $quiz)
     {
+        $cohorts = Cohort::all();
+
         return view('pages.knowledge.show', [
-            'quiz' => $quiz
+            'quiz' => $quiz,
+            'cohorts' => $cohorts
         ]);
     }
 
-    public function answer(Quiz $quiz)
-    {
-        return view('pages.knowledge.answer', [
-            'quiz' => $quiz
-        ]);
-    }
+
+
 }

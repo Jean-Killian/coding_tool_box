@@ -79,4 +79,21 @@ class User extends Authenticatable
     {
         return $this->schools()->first();
     }
+
+    public function cohorts()
+    {
+        return $this->belongsToMany(Cohort::class, 'cohort_user')->withTimestamps();
+    }
+
+    public function quizzes()
+    {
+        return $this->belongsToMany(Quiz::class, 'cohorts_bilans')
+            ->withPivot('score')
+            ->withTimestamps();
+    }
+
+    public function isTeacher(): bool
+    {
+        return $this->schools()->wherePivot('role', 'teacher')->exists();
+    }
 }

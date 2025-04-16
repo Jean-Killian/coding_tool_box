@@ -24,8 +24,13 @@ class Quiz extends Model
 
     public function cohorts()
     {
-        return $this->belongsToMany(Cohort::class, 'cohorts_bilans')
-            ->withPivot('user_id', 'score')
+        return $this->belongsToMany(Cohort::class, 'cohorts_bilans');
+    }
+
+    public function students()
+    {
+        return $this->belongsToMany(User::class, 'cohorts_bilans')
+            ->withPivot('score')
             ->withTimestamps();
     }
     public function user()

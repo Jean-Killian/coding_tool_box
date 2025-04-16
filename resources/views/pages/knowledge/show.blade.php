@@ -33,11 +33,32 @@
         </ol>
 
         <!-- Submit button -->
-        <label class="block">
-            <input type="checkbox" name="publish" value="1" checked>
-            <span class="ml-2">Publier ce QCM pour les étudiants</span>
-        </label>
+        @if(auth()->user()->isTeacher())
+            <hr>
+            <form method="POST" action="{{ route('knowledge.assign.quiz') }}" class="space-y-2">
+                @csrf
 
+                <input type="hidden" name="quiz_id" value="{{ $quiz->id }}">
+
+                <label for="cohort_id" class="block font-medium">Affecter à une cohorte :</label>
+                <select name="cohort_id" id="cohort_id" class="border rounded p-2 w-full" required>
+                    <option value="">-- Sélectionner une cohorte --</option>
+                    @foreach($cohorts as $cohort)
+                        <option value="{{ $cohort->id }}">{{ $cohort->name }}</option>
+                    @endforeach
+                </select>
+
+                <button type="submit" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded">
+                    📢 Publier ce QCM
+                </button>
+            </form>
+        @endif
+
+        {{-- ✅ Message de confirmation si succès --}}
+        @if(session('success'))
+            <div class="mt-4 p-3 bg-green-100 text-green-800 rounded">
+                {{ session('success') }}
+            </div>
+        @endif
     </div>
 </x-app-layout>
-

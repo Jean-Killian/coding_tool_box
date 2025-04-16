@@ -21,8 +21,8 @@ class CohortFactory extends Factory
             'school_id' => School::factory(),
             'name' => 'Cohorte ' . fake()->unique()->word(),
             'description' => fake()->sentence(),
-            'start_date' => now()->subMonths(1),
-            'end_date' => now()->addMonths(3),
+            'start_date' => now()->subMonths(1)->toDateString(),
+            'end_date' => now()->addMonths(3)->toDateString(),
         ];
     }
 }

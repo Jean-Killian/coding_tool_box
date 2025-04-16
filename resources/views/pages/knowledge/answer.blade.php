@@ -14,7 +14,7 @@
         </div>
 
         <!-- Form to submit answers -->
-        <form {{--action="{{ route('student.quiz.submit', $quiz) }}" method="POST"--}}>
+        <form action="{{ route('knowledge.quiz.submit', $quiz) }}" method="POST">
             @csrf
             <ol class="space-y-6">
                 @foreach ($quiz->questions as $index => $question)
