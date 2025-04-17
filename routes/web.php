@@ -5,9 +5,10 @@ use App\Http\Controllers\CommonLifeController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\GroupController;
 use App\Http\Controllers\Knowledge\IAQuizGeneratorController;
-use App\Http\Controllers\Knowledge\KnowledgeController;
-use App\Http\Controllers\Knowledge\StudentKnowledgeController;
-use App\Http\Controllers\Knowledge\TeacherKnowledgeController;
+use App\Http\Controllers\Knowledge\QuizAssignmentController;
+use App\Http\Controllers\Knowledge\QuizCreationController;
+use App\Http\Controllers\Knowledge\StudentQuizController;
+use App\Http\Controllers\Knowledge\TeacherQuizController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RetroController;
 use App\Http\Controllers\StudentController;
@@ -39,21 +40,21 @@ Route::middleware('auth')->group(function () {
 
         // Knowledge
         Route::prefix('knowledge')->name('knowledge.')->group(function () {
-            Route::get('/', [KnowledgeController::class, 'index'])->name('index');
-            Route::get('/teacher_index', [TeacherKnowledgeController::class, 'indexTeacher'])->name('teacher_index');
-            Route::get('/generate', [KnowledgeController::class, 'showQuizCreationForm'])->name('generate');
+            Route::get('/', [StudentQuizController::class, 'index'])->name('index');
+            Route::get('/teacher_index', [TeacherQuizController::class, 'indexTeacher'])->name('teacher_index');
+            Route::get('/generate', [QuizCreationController::class, 'showQuizCreationForm'])->name('generate');
             Route::get('/generate-ia', [IAQuizGeneratorController::class, 'generateQuizFromUserInput'])->name('ia.generate');
-            Route::get('/preview', [TeacherKnowledgeController::class, 'previewGeneratedQuiz'])->name('preview');
-            Route::post('/store', [KnowledgeController::class, 'saveGeneratedQuiz'])->name('store');
-            Route::get('/quiz/show/{quiz}', [KnowledgeController::class, 'show'])->name('quiz.show');
-            Route::get('/quiz/answer/{quiz}', [StudentKnowledgeController::class, 'answer'])->name('quiz.answer');
-            Route::post('/quiz/answer/{quiz}', [StudentKnowledgeController::class, 'submitAnswers'])->name('quiz.submit');
-            Route::post('/assign-quiz', [TeacherKnowledgeController::class, 'assign'])->name('assign.quiz');
-            Route::get('/assign-quiz', [TeacherKnowledgeController::class, 'showAssignForm'])->name('assign.quiz.form');
+            Route::get('/preview', [TeacherQuizController::class, 'previewGeneratedQuiz'])->name('preview');
+            Route::post('/store', [QuizCreationController::class, 'saveGeneratedQuiz'])->name('store');
+            Route::get('/quiz/show/{quiz}', [TeacherQuizController::class, 'show'])->name('quiz.show');
+            Route::get('/quiz/answer/{quiz}', [StudentQuizController::class, 'answer'])->name('quiz.answer');
+            Route::post('/quiz/answer/{quiz}', [StudentQuizController::class, 'submitAnswers'])->name('quiz.submit');
+            Route::post('/assign-quiz', [QuizAssignmentController::class, 'assign'])->name('assign.quiz');
+            Route::get('/assign-quiz', [TeacherQuizController::class, 'showAssignForm'])->name('assign.quiz.form');
             Route::get('/temp-answer', [IAQuizGeneratorController::class, 'showTempAnswerForm'])->name('temp.answer');
             Route::post('/temp-answer', [IAQuizGeneratorController::class, 'submitTempAnswers'])->name('temp.submit');
-            Route::get('/quiz/result/{quiz}', [StudentKnowledgeController::class, 'result'])->name('quiz.result');
-            Route::delete('/quiz/{quiz}', [TeacherKnowledgeController::class, 'destroy'])->name('quiz.delete');
+            Route::get('/quiz/result/{quiz}', [StudentQuizController::class, 'result'])->name('quiz.result');
+            Route::delete('/quiz/{quiz}', [TeacherQuizController::class, 'destroy'])->name('quiz.delete');
         });
 
         // Groups

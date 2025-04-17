@@ -130,7 +130,11 @@ class IAQuizGeneratorController extends Controller
             return redirect()->route('knowledge.index')->with('error', 'Aucun QCM temporaire trouvé.');
         }
 
-        return view('pages.knowledge.temp_answer', compact('quiz', 'subject'));
+        return view('pages.knowledge.quiz_answer', [
+            'quizQuestions' => $quiz,
+            'subject' => $subject,
+            'action' => route('knowledge.temp.submit')
+        ]);
     }
 
     public function submitTempAnswers(Request $request)

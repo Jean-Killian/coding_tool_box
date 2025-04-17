@@ -73,4 +73,9 @@ class QuizPolicy
     {
         return false;
     }
+
+    public function assign(User $user, Quiz $quiz): bool
+    {
+        return $user->isTeacher() && $quiz->user_id === $user->id;
+    }
 }
