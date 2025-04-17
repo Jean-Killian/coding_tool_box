@@ -6,7 +6,7 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Support\Facades\Log;
 
-class MistralApiService
+class QuizAIService
 {
     protected Client $client;
     protected string $apiKey;

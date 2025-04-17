@@ -10,7 +10,10 @@
             <label class="block font-semibold mb-1">Sélectionner un QCM</label>
             <select name="quiz_id" class="w-full border-gray-300 rounded">
                 @foreach ($quizzes as $quiz)
-                    <option value="{{ $quiz->id }}">{{ $quiz->subject }}</option>
+                    <option value="{{ $quiz->id }}"
+                        {{ (isset($selectedQuizId) && $selectedQuizId == $quiz->id) ? 'selected' : '' }}>
+                        {{ $quiz->subject }}
+                    </option>
                 @endforeach
             </select>
         </div>

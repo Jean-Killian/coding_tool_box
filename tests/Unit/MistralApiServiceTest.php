@@ -3,7 +3,7 @@
 namespace Tests\Unit;
 
 use Tests\TestCase;
-use App\Services\MistralApiService;
+use App\Services\QuizAIService;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Exception\RequestException;
@@ -33,7 +33,7 @@ class MistralApiServiceTest extends TestCase
             ->once()
             ->andReturn($mockResponse);
 
-        $service = new MistralApiService();
+        $service = new QuizAIService();
         $reflection = new \ReflectionClass($service);
         $property = $reflection->getProperty('client');
         $property->setAccessible(true);
@@ -55,7 +55,7 @@ class MistralApiServiceTest extends TestCase
             ->andThrow(RequestException::create(new \GuzzleHttp\Psr7\Request('POST', 'test'),
                 new Response(400, [], json_encode(['error' => 'Bad Request']))));
 
-        $service = new MistralApiService();
+        $service = new QuizAIService();
         $reflection = new \ReflectionClass($service);
         $property = $reflection->getProperty('client');
         $property->setAccessible(true);

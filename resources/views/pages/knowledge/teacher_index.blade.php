@@ -24,8 +24,13 @@
 
                     <div class="flex gap-3">
                         <a href="{{ route('knowledge.quiz.show', $quiz) }}" class="text-blue-600 underline">👁️ Voir</a>
-                        <a href="{{ route('knowledge.assign.quiz.form') }}" class="text-indigo-600 underline">📤 Affecter à une cohorte</a>
+                        <a href="{{ route('knowledge.assign.quiz.form', ['quiz_id' => $quiz->id]) }}" class="text-indigo-600 underline">📤 Affecter à une cohorte</a>
                     </div>
+                    <form action="{{ route('knowledge.quiz.delete', $quiz->id) }}" method="POST" onsubmit="return confirm('Supprimer ce QCM ?')" class="inline">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="text-red-600 underline">🗑 Supprimer</button>
+                    </form>
                 </div>
             @empty
                 <p class="text-gray-500 italic">Aucun QCM publié.</p>
@@ -43,8 +48,14 @@
 
                     <div class="flex gap-3">
                         <a href="{{ route('knowledge.quiz.show', $quiz) }}" class="text-blue-600 underline">👁️ Voir</a>
-                        <a href="{{ route('knowledge.assign.quiz.form') }}" class="text-indigo-600 underline">📤 Publier / Affecter</a>
+                        <a href="{{ route('knowledge.assign.quiz.form', ['quiz_id' => $quiz->id]) }}" class="text-indigo-600 underline">📤 Publier / Affecter</a>
                     </div>
+
+                    <form action="{{ route('knowledge.quiz.delete', $quiz->id) }}" method="POST" onsubmit="return confirm('Supprimer ce QCM ?')" class="inline">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="text-red-600 underline">🗑 Supprimer</button>
+                    </form>
                 </div>
             @empty
                 <p class="text-gray-500 italic">Aucun QCM en brouillon.</p>

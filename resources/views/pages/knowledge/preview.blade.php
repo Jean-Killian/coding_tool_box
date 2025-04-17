@@ -1,4 +1,4 @@
-<x-app-layout>
+{{--<x-app-layout>
     <!-- Page header -->
     <x-slot name="header">
         <h1 class="text-lg font-bold">🧐 Aperçu du QCM généré</h1>
@@ -68,5 +68,5 @@
             </div>
         </form>
     </div>
-</x-app-layout>
+</x-app-layout>--}}
 

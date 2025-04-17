@@ -3,7 +3,7 @@
 namespace Tests\Feature;
 
 use Tests\TestCase;
-use App\Services\MistralApiService;
+use App\Services\QuizAIService;
 
 class MistralApiIntegrationTest extends TestCase
 {
@@ -12,7 +12,7 @@ class MistralApiIntegrationTest extends TestCase
      */
     public function testGenerateQuestionnaireIntegration()
     {
-        $service = new MistralApiService();
+        $service = new QuizAIService();
 
         $result = $service->generateQuestionnaire([
             'messages' => [

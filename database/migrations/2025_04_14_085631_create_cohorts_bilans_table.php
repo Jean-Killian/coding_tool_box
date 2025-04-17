@@ -19,6 +19,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
 
             $table->float('score')->nullable();
+            $table->json('answers')->nullable();
 
             $table->timestamps();
         });

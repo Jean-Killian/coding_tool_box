@@ -1,4 +1,4 @@
-<x-app-layout>
+{{--<x-app-layout>
     <!-- Page header -->
     <x-slot name="header">
         <h1 class="text-lg font-bold">🧾 QCM : {{ $quiz->subject }}</h1>
@@ -54,11 +54,11 @@
             </form>
         @endif
 
-        {{-- ✅ Message de confirmation si succès --}}
+        {{-- ✅ Message de confirmation si succès
         @if(session('success'))
             <div class="mt-4 p-3 bg-green-100 text-green-800 rounded">
                 {{ session('success') }}
             </div>
         @endif
     </div>
-</x-app-layout>
+</x-app-layout>--}}

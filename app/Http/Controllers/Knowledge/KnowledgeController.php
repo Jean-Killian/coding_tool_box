@@ -15,31 +15,10 @@ class KnowledgeController extends Controller
     use AuthorizesRequests;
 
     /**
-     * Shows a preview of the generated QCM before saving.
-     * Retrieves data from session and sends it to the preview view.
-     */
-    public function reviewGenerated(Request $request)
-    {
-        $qcmJson = session('qcm');
-        $subject = session('subject');
-        $questionCount = session('question_count');
-
-        $qcm = json_decode($qcmJson, true);
-
-        return view('pages.knowledge.preview', [
-            'qcm' => $qcm,
-            'subject' => $subject,
-            'questionCount' => $questionCount,
-            'qcmRaw' => $qcmJson
-        ]);
-    }
-
-    /**
      * Saves the validated QCM to the database.
      * Validates the form, decodes JSON, and stores the quiz.
      */
-    public function saveGenerated(Request $request)
-    {
+    public function saveGeneratedQuiz(Request $request){
         if ($request->publish && !auth()->user()->can('create', Quiz::class)) {
             abort(403, 'Vous n\'êtes pas autorisé à publier ce QCM.');
         }
@@ -52,15 +31,13 @@ class KnowledgeController extends Controller
 
         $qcmArray = json_decode($request->input('qcm'), true);
 
-        if (!is_array($qcmArray))
-        {
+        if (!is_array($qcmArray)){
             return back()->withErrors([
                 'qcm' => 'Le contenu du QCM est invalide (format JSON incorrect).'
             ]);
         }
 
-        Quiz::create
-        ([
+        Quiz::create([
             'user_id' => Auth::id(),
             'subject' => $request->subject,
             'question_count' => $request->question_count,
@@ -106,7 +83,7 @@ class KnowledgeController extends Controller
      * Displays the form to create a new QCM.
      * Used to define subject and number of questions.
      */
-    public function create()
+    public function showQuizCreationForm()
     {
         return view('pages.knowledge.generate');
     }
@@ -118,13 +95,10 @@ class KnowledgeController extends Controller
     public function show(Quiz $quiz)
     {
         $cohorts = Cohort::all();
-
-        return view('pages.knowledge.show', [
+        return view('pages.knowledge.quiz_display', [
+            'mode' => 'show',
             'quiz' => $quiz,
             'cohorts' => $cohorts
         ]);
     }
-
-
-
 }

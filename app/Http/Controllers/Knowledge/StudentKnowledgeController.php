@@ -56,10 +56,33 @@ class StudentKnowledgeController
             ->where('quiz_id', $quiz->id)
             ->update([
                 'score' => $score,
+                'answers' => json_encode($answers),
                 'updated_at' => now(),
             ]);
 
-        return redirect()->route('knowledge.index')
-            ->with('success', "Score enregistré : $score / " . count($quiz->questions));
+        //return redirect()->route('pages.knowledge.answer')->with('success', "Score enregistré : $score / " . count($quiz->questions));
+        return redirect()->route('knowledge.quiz.result', $quiz->id);
+    }
+
+    public function result(Quiz $quiz)
+    {
+        $user = auth()->user();
+
+        $bilan = DB::table('cohorts_bilans')
+            ->where('user_id', $user->id)
+            ->where('quiz_id', $quiz->id)
+            ->first();
+
+        if (!$bilan || !$bilan->answers) {
+            return redirect()->route('knowledge.index')
+                ->with('error', 'Aucune réponse enregistrée pour ce QCM.');
+        }
+
+        return view('pages.knowledge.result', [
+            'quiz' => $quiz->questions,
+            'answers' => json_decode($bilan->answers, true),
+            'score' => $bilan->score,
+            'total' => $quiz->question_count,
+        ]);
     }
 }

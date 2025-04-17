@@ -55,7 +55,7 @@ class QuizPolicy
      */
     public function delete(User $user, Quiz $quiz): bool
     {
-        return false;
+        return $user->id === $quiz->user_id;
     }
 
     /**

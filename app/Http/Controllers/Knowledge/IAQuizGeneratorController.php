@@ -3,7 +3,8 @@
 namespace App\Http\Controllers\Knowledge;
 
 use App\Http\Controllers\Controller;
-use App\Services\MistralApiService;
+use App\Services\QuizAIService;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
@@ -12,17 +13,28 @@ class IAQuizGeneratorController extends Controller
     /**
      * Handles the full flow of generating a quiz from user inputs via AI.
      */
-    public function generateFromPrompt(Request $request)
+    public function generateQuizFromUserInput(Request $request)
     {
         $data = $this->validateInputs($request);
 
         $prompt = $this->buildPrompt($data['subject'], $data['count'], $data['answers']);
 
-        $qcm = $this->callMistral($prompt);
+        $qcm = $this->fetchQuizFromAI($prompt);
 
         if (!is_array($qcm) || empty($qcm)) {
             return redirect()->route('knowledge.generate')
                 ->withErrors(['qcm' => 'La génération du bilan a échoué. Essayez un sujet plus précis.']);
+        }
+
+        $user = auth()->user();
+
+        if (!$user->isTeacher()) {
+            session([
+                'temp_quiz' => $qcm,
+                'temp_subject' => $data['subject'],
+            ]);
+
+            return redirect()->route('knowledge.temp.answer');
         }
 
         session([
@@ -73,7 +85,7 @@ class IAQuizGeneratorController extends Controller
 
         Tu dois retourner UNIQUEMENT un tableau JSON strictement valide, **sans aucun texte autour**.
 
-        Voici un exemple avec {$answers} réponses :
+        Voici un exemple avec 4 réponses possibles :
         [
             {
                 "question": "Que fait la commande `php artisan migrate` en Laravel ?",
@@ -90,10 +102,10 @@ class IAQuizGeneratorController extends Controller
     /**
      * Sends the prompt to the Mistral API and returns the decoded QCM.
      */
-    private function callMistral(string $prompt): ?array
+    private function fetchQuizFromAI(string $prompt): ?array
     {
         try {
-            $mistral = new MistralApiService();
+            $mistral = new QuizAIService();
             $response = $mistral->generateQuestionnaire([
                 'messages' => [
                     ['role' => 'user', 'content' => $prompt]
@@ -102,10 +114,47 @@ class IAQuizGeneratorController extends Controller
 
             return json_decode($response['choices'][0]['message']['content'] ?? '', true);
 
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('Erreur IA : ' . $e->getMessage());
 
             return null;
         }
+    }
+
+    public function showTempAnswerForm()
+    {
+        $quiz = session('temp_quiz');
+        $subject = session('temp_subject');
+
+        if (!$quiz) {
+            return redirect()->route('knowledge.index')->with('error', 'Aucun QCM temporaire trouvé.');
+        }
+
+        return view('pages.knowledge.temp_answer', compact('quiz', 'subject'));
+    }
+
+    public function submitTempAnswers(Request $request)
+    {
+        $quiz = session('temp_quiz');
+
+        if (!$quiz) {
+            return redirect()->route('knowledge.index')->with('error', 'QCM expiré ou invalide.');
+        }
+
+        $answers = $request->input('answers', []);
+        $score = 0;
+
+        foreach ($quiz as $index => $question) {
+            if (isset($answers[$index]) && $answers[$index] === $question['answer']) {
+                $score++;
+            }
+        }
+
+        return view('pages.knowledge.result', [
+            'quiz' => $quiz,
+            'answers' => $answers,
+            'score' => $score,
+            'total' => count($quiz),
+        ]);
     }
 }
