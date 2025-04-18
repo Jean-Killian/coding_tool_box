@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Cohort;
 use App\Models\School;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -64,5 +65,17 @@ class DatabaseSeeder extends Seeder
             'school_id' => $school->id,
             'role'      => 'student'
         ]);
+
+        // Création d'une cohorte liée à l'école
+        $cohort = Cohort::create([
+            'school_id'   => $school->id,
+            'name'        => 'Promo 2025',
+            'description' => 'Étudiants de l’année 2025',
+            'start_date'  => now(),
+            'end_date'    => now()->addMonths(6),
+        ]);
+
+        // Lier l'étudiant à la cohorte (via table cohort_user)
+        $cohort->users()->attach($user->id);
     }
 }
