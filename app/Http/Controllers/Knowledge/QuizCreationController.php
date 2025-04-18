@@ -20,13 +20,7 @@ class QuizCreationController extends Controller
     }
 
     /**
-     * Store a newly generated quiz in the database.
-     *
-     * Validates the user request, decodes the QCM structure,
-     * and saves it into the quizzes table.
-     *
-     * @param Request $request
-     * @return \Illuminate\Http\RedirectResponse
+     * Handles the submission of a generated quiz and stores it in the database.
      */
     public function saveGeneratedQuiz(Request $request)
     {
@@ -44,6 +38,9 @@ class QuizCreationController extends Controller
         return redirect()->route('knowledge.index')->with('success', 'QCM enregistré');
     }
 
+    /**
+     * Validates the request data for quiz creation.
+     */
     private function validateQuizSubmission(Request $request)
     {
         return $request->validate([
@@ -53,6 +50,12 @@ class QuizCreationController extends Controller
         ]);
     }
 
+    /**
+     * Parses and decodes the quiz JSON payload.
+     *
+     * @param string $json
+     * @return array|null
+     */
     private function parseQuizJson($json)
     {
         $data = json_decode($json, true);
@@ -60,8 +63,7 @@ class QuizCreationController extends Controller
     }
 
     /**
-     * Displays the form to create a new QCM.
-     * Used to define subject and number of questions.
+     * Displays the form for creating a new quiz manually or via IA.
      */
     public function showQuizCreationForm()
     {

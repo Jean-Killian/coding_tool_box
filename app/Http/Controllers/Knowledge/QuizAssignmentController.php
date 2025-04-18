@@ -20,8 +20,15 @@ class QuizAssignmentController
     }
 
     /**
-     * Affecte un QCM à une cohorte et publie le QCM.
-     * @throws AuthorizationException
+     * Assigns a quiz to a given cohort.
+     *
+     * Validates the request, checks authorization,
+     * and delegates the assignment logic to the service layer.
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     *
+     * @throws AuthorizationException If the user is not authorized to assign the quiz.
      */
     public function assign(Request $request)
     {

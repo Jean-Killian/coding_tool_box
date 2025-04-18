@@ -37,6 +37,9 @@ class QuizPolicy
         return false;
     }
 
+    /**
+     * Determine whether the user can view teacher-specific content
+     */
     public function viewTeacherContent(User $user): bool
     {
         return $user->isTeacher();
@@ -74,6 +77,9 @@ class QuizPolicy
         return false;
     }
 
+    /**
+     * Determine whether the teacher is allowed to assign this quiz to a cohort.
+     */
     public function assign(User $user, Quiz $quiz): bool
     {
         return $user->isTeacher() && $quiz->user_id === $user->id;

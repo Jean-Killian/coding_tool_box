@@ -120,45 +120,4 @@ class IAQuizGeneratorController extends Controller
             return null;
         }
     }
-
-    public function showTempAnswerForm()
-    {
-        $quiz = session('temp_quiz');
-        $subject = session('temp_subject');
-
-        if (!$quiz) {
-            return redirect()->route('knowledge.index')->with('error', 'Aucun QCM temporaire trouvé.');
-        }
-
-        return view('pages.knowledge.quiz_answer', [
-            'quizQuestions' => $quiz,
-            'subject' => $subject,
-            'action' => route('knowledge.temp.submit')
-        ]);
-    }
-
-    public function submitTempAnswers(Request $request)
-    {
-        $quiz = session('temp_quiz');
-
-        if (!$quiz) {
-            return redirect()->route('knowledge.index')->with('error', 'QCM expiré ou invalide.');
-        }
-
-        $answers = $request->input('answers', []);
-        $score = 0;
-
-        foreach ($quiz as $index => $question) {
-            if (isset($answers[$index]) && $answers[$index] === $question['answer']) {
-                $score++;
-            }
-        }
-
-        return view('pages.knowledge.result', [
-            'quiz' => $quiz,
-            'answers' => $answers,
-            'score' => $score,
-            'total' => count($quiz),
-        ]);
-    }
 }

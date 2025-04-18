@@ -68,6 +68,12 @@ class User extends Authenticatable
         return $this->first_name . ' ' . $this->last_name[0] . '.';
     }
 
+    /**
+     * Defines the many-to-many relationship between the user and schools.
+     * Includes the role of the user in the school and timestamps.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
     public function schools()
     {
         return $this->belongsToMany(School::class, 'users_schools')
@@ -75,16 +81,32 @@ class User extends Authenticatable
             ->withTimestamps();
     }
 
+    /**
+     * Returns the first associated school of the user.
+     * Useful when a user is only expected to belong to one school.
+     */
     public function school()
     {
         return $this->schools()->first();
     }
 
+    /**
+     * Defines the many-to-many relationship between the user and cohorts.
+     * Represents the classes or groups the user is part of.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
     public function cohorts()
     {
         return $this->belongsToMany(Cohort::class, 'cohort_user')->withTimestamps();
     }
 
+    /**
+     * Defines the many-to-many relationship between the user and quizzes.
+     * Includes the user's score and timestamps for when they took the quiz.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
     public function quizzes()
     {
         return $this->belongsToMany(Quiz::class, 'cohorts_bilans')
@@ -92,6 +114,11 @@ class User extends Authenticatable
             ->withTimestamps();
     }
 
+    /**
+     * Check if the user has a 'teacher' role in at least one of their schools.
+     *
+     * @return bool
+     */
     public function isTeacher(): bool
     {
         return $this->schools()->wherePivot('role', 'teacher')->exists();

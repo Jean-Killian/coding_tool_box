@@ -9,7 +9,19 @@ use Illuminate\Support\Facades\DB;
 class QuizAssignmentService
 {
     /**
-     * Affecte un QCM à tous les étudiants d'une cohorte.
+     * Assigns a quiz to all students within a specific cohort.
+     *
+     * - Ensures that each student receives an entry in the `cohorts_bilans` table.
+     * - If an assignment already exists for a student, it is updated with the current timestamps.
+     * - Publishes the quiz by setting `is_published` to true.
+     *
+     * @param int $quizId   The ID of the quiz to assign.
+     * @param int $cohortId The ID of the cohort to assign the quiz to.
+     *
+     * @return void
+     *
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
+     *         If the quiz or cohort does not exist.
      */
     public function assignQuizToCohort(int $quizId, int $cohortId): void
     {
