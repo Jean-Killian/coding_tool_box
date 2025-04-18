@@ -35,3 +35,7 @@ renvoie une erreur
 -  Permettre l’édition des QCM (actuellement non modifiables)
 -  Ajouter des feedbacks plus visuels lors des soumissions (alertes, toasts, etc.)
 -  Mettre en place des tests PHPUnit (services + contrôleurs)
+
+## Mistral AI API
+- https://console.mistral.ai/home
+- Model utilisé : Mistral Small
